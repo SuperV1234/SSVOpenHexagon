@@ -15,6 +15,7 @@
 #include "SSVOpenHexagon/Utils/LuaWrapper.hpp"
 #include "SSVOpenHexagon/Utils/FastVertexVector.hpp"
 #include "SSVOpenHexagon/Utils/Timeline2.hpp"
+#include "SSVOpenHexagon/Utils/TimelineGlobal.hpp"
 #include "SSVOpenHexagon/Components/CCustomWallManager.hpp"
 
 #include <SSVStart/GameSystem/GameSystem.hpp>
@@ -89,6 +90,7 @@ private:
     sf::Font& fontBold;
 
     Audio* audio;
+    MusicData::Segment segment;
 
     const LevelData* levelData;
 
@@ -142,6 +144,9 @@ private:
 
     Utils::timeline2 eventTimeline;
     Utils::timeline2_runner eventTimelineRunner;
+
+    Utils::timelineGlobal musicTimeline;
+    Utils::timelineGlobal_runner musicTimelineRunner;
 
     Utils::timeline2 messageTimeline;
     Utils::timeline2_runner messageTimelineRunner;
@@ -300,6 +305,7 @@ private:
     void updateWalls(ssvu::FT mFT);
     void updateIncrement();
     void updateEvents(ssvu::FT mFT);
+    void updateMusic(ssvu::FT mFT);
     void updateLevel(ssvu::FT mFT);
     void updateCustomWalls(ssvu::FT mFT);
     void updatePulse(ssvu::FT mFT);

@@ -38,6 +38,8 @@ public:
 
     ~Audio();
 
+    [[nodiscard]] int32_t getCurrentMusicTime();
+
     void setSoundVolume(const float volume);
     void setMusicVolume(const float volume);
 

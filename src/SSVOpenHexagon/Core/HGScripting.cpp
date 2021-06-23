@@ -175,6 +175,60 @@ void HexagonGame::initLua_Utils()
 
 void HexagonGame::initLua_AudioControl()
 {
+    addLuaFn(lua, "a_getMusicSeconds", //
+        [this] { return status.getMusicTimeSeconds(); })
+        .doc("Return the music pointer's current position in seconds.");
+
+    addLuaFn(lua, "a_getMusicMilliseconds", //
+        [this] { return status.getMusicTime(); })
+        .doc(
+            "Return the music pointer's current position in milliseconds. "
+            "Unlike `a_getMusicSeconds`, this will return an integer. Useful "
+            "for avoiding floating point error.");
+
+    addLuaFn(lua, "a_evalTo", //
+        [this](double mTime, const std::string& mCode)
+        {
+            musicTimeline.append_to((int32_t)(mTime * 1000),
+                [=, this] { Utils::runLuaCode(lua, mCode); });
+        })
+        .arg("time")
+        .arg("code")
+        .doc(
+            "*Add to the music timeline*: evaluate the Lua code specified in "
+            "`$1` at `$0` seconds in the music timeline.");
+
+    addLuaFn(lua, "a_evalToMs", //
+        [this](int32_t mTime, const std::string& mCode)
+        {
+            musicTimeline.append_to(
+                mTime, [=, this] { Utils::runLuaCode(lua, mCode); });
+        })
+        .arg("time")
+        .arg("code")
+        .doc(
+            "*Add to the music timeline*: evaluate the Lua code specified in "
+            "`$1` at `$0` milliseconds in the music timeline.");
+
+    addLuaFn(lua, "a_clearTimepoint", //
+        [this](double mTime)
+        { musicTimeline.clearTimepoint((int32_t)(mTime * 1000)); })
+        .arg("time")
+        .doc(
+            "Removes all events that occur at specific time `$0` seconds in "
+            "the music timeline.");
+
+    addLuaFn(lua, "a_clearTimepointMs", //
+        [this](int32_t mTime) { musicTimeline.clearTimepoint(mTime); })
+        .arg("time")
+        .doc(
+            "Removes all events that occur at specific time `$0` milliseconds "
+            "in the music timeline.");
+
+    addLuaFn(lua, "a_clear", //
+        [this] { musicTimeline.clear(); })
+        .doc("Removes all events from the music timeline.");
+
     addLuaFn(lua, "a_setMusic", //
         [this](const std::string& mId)
         {

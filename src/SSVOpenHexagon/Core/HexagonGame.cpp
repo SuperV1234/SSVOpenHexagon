@@ -584,6 +584,7 @@ void HexagonGame::newGame(const std::string& mPackId, const std::string& mId,
                 ._data{lastReplayData},
                 ._pack_id{mPackId},
                 ._level_id{mId},
+                ._music_start_time{segment.time},
                 ._first_play{lastFirstPlay},
                 ._difficulty_mult{mDifficultyMult},
                 ._played_score{lastPlayedScore},
@@ -604,6 +605,7 @@ void HexagonGame::newGame(const std::string& mPackId, const std::string& mId,
 
         rng = random_number_generator{activeReplay->replayFile._seed};
         firstPlay = activeReplay->replayFile._first_play;
+        
     }
 
     // Audio cleanup
@@ -614,7 +616,14 @@ void HexagonGame::newGame(const std::string& mPackId, const std::string& mId,
 
         if(!Config::getNoMusic())
         {
-            playLevelMusic();
+            if(!executeLastReplay)
+            {
+                playLevelMusic();
+            } 
+            else 
+            {
+                playLevelMusicAtTime(activeReplay->replayFile._music_start_time);
+            }
             audio->pauseMusic();
             refreshMusicPitch();
         }
@@ -633,6 +642,10 @@ void HexagonGame::newGame(const std::string& mPackId, const std::string& mId,
     // Event timeline cleanup
     eventTimeline.clear();
     eventTimelineRunner = {};
+
+    // Music timeline cleanup
+    musicTimeline.clear();
+    musicTimelineRunner = {};
 
     // Message timeline cleanup
     messageTimeline.clear();
@@ -1321,9 +1334,8 @@ void HexagonGame::playLevelMusic()
 {
     if(shouldPlayMusic())
     {
-        const MusicData::Segment segment =
-            musicData.playRandomSegment(getPackId(), *audio);
-
+        segment = musicData.playRandomSegment(getPackId(), *audio);
+        musicTimelineRunner.clearLastTp();
         // TODO (P1): problems with addHash in headless mode:
         status.beatPulseDelay += segment.beatPulseDelayOffset;
     }
@@ -1334,6 +1346,7 @@ void HexagonGame::playLevelMusicAtTime(float mSeconds)
     if(shouldPlayMusic())
     {
         musicData.playSeconds(getPackId(), *audio, mSeconds);
+        musicTimelineRunner.clearLastTp();
     }
 }
 

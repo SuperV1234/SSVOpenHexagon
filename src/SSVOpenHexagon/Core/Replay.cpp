@@ -195,14 +195,15 @@ void replay_player::reset() noexcept
 [[nodiscard]] bool replay_file::operator==(
     const replay_file& rhs) const noexcept
 {
-    return _version == rhs._version &&                 //
-           _player_name == rhs._player_name &&         //
-           _seed == rhs._seed &&                       //
-           _data == rhs._data &&                       //
-           _pack_id == rhs._pack_id &&                 //
-           _level_id == rhs._level_id &&               //
-           _first_play == rhs._first_play &&           //
-           _difficulty_mult == rhs._difficulty_mult && //
+    return _version == rhs._version &&                   //
+           _player_name == rhs._player_name &&           //
+           _seed == rhs._seed &&                         //
+           _data == rhs._data &&                         //
+           _pack_id == rhs._pack_id &&                   //
+           _level_id == rhs._level_id &&                 //
+           _music_start_time == rhs._music_start_time && //
+           _first_play == rhs._first_play &&             //
+           _difficulty_mult == rhs._difficulty_mult &&   //
            _played_score == rhs._played_score;
 }
 
@@ -260,6 +261,7 @@ void replay_player::reset() noexcept
 
     SSVOH_TRY(write_str(_pack_id));
     SSVOH_TRY(write_str(_level_id));
+    SSVOH_TRY(write(_music_start_time));
     SSVOH_TRY(write(_first_play));
     SSVOH_TRY(write(_difficulty_mult));
     SSVOH_TRY(write(_played_score));
@@ -316,6 +318,7 @@ void replay_player::reset() noexcept
 
     SSVOH_TRY(read_str(_pack_id));
     SSVOH_TRY(read_str(_level_id));
+    SSVOH_TRY(read(_music_start_time));
     SSVOH_TRY(read(_first_play));
     SSVOH_TRY(read(_difficulty_mult));
     SSVOH_TRY(read(_played_score));
@@ -416,8 +419,8 @@ static constexpr std::size_t buf_size{2097152}; // 2MB
 
 [[nodiscard]] std::string replay_file::create_filename() const
 {
-    return Utils::concat(_version, '_', _player_name, '_', _pack_id, '_',
-        _level_id, '_', _difficulty_mult, '_', _played_score, ".ohreplay");
+    return Utils::concat(_version, '_', _player_name, '_', _level_id, '_',
+        _difficulty_mult, '_', _played_score, ".ohreplay");
 }
 
 [[nodiscard]] bool compressed_replay_file::serialize_to_file(

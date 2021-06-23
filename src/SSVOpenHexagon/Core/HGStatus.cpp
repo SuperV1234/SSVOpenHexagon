@@ -97,6 +97,21 @@ void HexagonGameStatus::accumulateFrametime(const double ft) noexcept
     }
 }
 
+[[nodiscard]] int32_t HexagonGameStatus::getMusicTime() noexcept
+{
+    return musicPointer;
+}
+
+[[nodiscard]] double HexagonGameStatus::getMusicTimeSeconds() noexcept
+{
+    return (musicPointer / 1000.0);
+}
+
+void HexagonGameStatus::updateMusicTime(int32_t newTime) noexcept
+{
+    musicPointer = newTime;
+}
+
 void HexagonGameStatus::updateCustomScore(const float score) noexcept
 {
     customScore = score;

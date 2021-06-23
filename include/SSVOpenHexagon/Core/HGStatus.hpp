@@ -31,6 +31,7 @@ private:
     double currentPause{0.1 * 60};       // Current pause time
     double currentIncrementTime{};       // Time since last increment
     float customScore{};                 // Value for alternative scoring
+    int32_t musicPointer{};              // Current time in level music
 
 public:
     float pulse{75};
@@ -83,6 +84,15 @@ public:
 
     // Accumulate the time spent in a frame into the total
     void accumulateFrametime(const double ft) noexcept;
+
+    // Get the current music time in milliseconds
+    [[nodiscard]] int32_t getMusicTime() noexcept;
+
+    // Get the current music time in seconds
+    [[nodiscard]] double getMusicTimeSeconds() noexcept;
+
+    // Update the music pointer with the new time
+    void updateMusicTime(int32_t newTime) noexcept;
 
     // Update the custom score
     void updateCustomScore(const float score) noexcept;

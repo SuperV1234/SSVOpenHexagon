@@ -228,6 +228,7 @@ void HexagonGame::update(ssvu::FT mFT, const float timescale)
                         levelStatus.sidesMin, levelStatus.sidesMax));
                 }
 
+                updateMusic(mFT);
                 updateLevel(mFT);
 
                 if(Config::getBeatPulse())
@@ -606,6 +607,12 @@ void HexagonGame::updateEvents(ssvu::FT)
     }
 }
 
+void HexagonGame::updateMusic(ssvu::FT)
+{
+    status.updateMusicTime(audio->getCurrentMusicTime());
+    musicTimelineRunner.update(musicTimeline, status.getMusicTime());
+}
+
 void HexagonGame::updateIncrement()
 {
     if(!levelStatus.incEnabled)
@@ -630,7 +637,6 @@ void HexagonGame::updateLevel(ssvu::FT mFT)
     {
         return;
     }
-
     runLuaFunctionIfExists<float>("onUpdate", mFT);
 
     const auto o = timelineRunner.update(timeline, status.getTimeTP());

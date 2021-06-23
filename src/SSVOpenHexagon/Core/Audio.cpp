@@ -59,6 +59,10 @@ public:
         SSVOH_ASSERT(static_cast<bool>(_soundBufferGetter));
     }
 
+    [[nodiscard]] int32_t getCurrentMusicTime() {
+        return _music->getPlayingOffset().asMilliseconds();
+    }
+
     void setSoundVolume(const float volume)
     {
         SSVOH_ASSERT(volume >= 0.f && volume <= 100.f);
@@ -195,6 +199,10 @@ Audio::Audio(const SoundBufferGetter& soundBufferGetter,
 {}
 
 Audio::~Audio() = default;
+
+[[nodiscard]] int32_t Audio::getCurrentMusicTime() {
+    return impl().getCurrentMusicTime();
+}
 
 void Audio::setSoundVolume(const float volume)
 {
