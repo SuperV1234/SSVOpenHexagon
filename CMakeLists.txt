@@ -341,6 +341,13 @@ if(WIN32)
         "${CMAKE_CURRENT_SOURCE_DIR}/_RELEASE/sdkencryptedappticket64.lib"
         sodium
     )
+elseif(APPLE)
+    set(PUBLIC_LIBRARIES
+        "${CMAKE_CURRENT_SOURCE_DIR}/_RELEASE/libsteam_api.dylib"
+        "${CMAKE_CURRENT_SOURCE_DIR}/_RELEASE/discord_game_sdk.dylib"
+        "${CMAKE_CURRENT_SOURCE_DIR}/_RELEASE/libsdkencryptedappticket.dylib"
+        sodium
+    )
 else()
     set(PUBLIC_LIBRARIES
         "${CMAKE_CURRENT_SOURCE_DIR}/_RELEASE/libsteam_api.so"
@@ -414,6 +421,8 @@ install(
 
 if(WIN32)
     set(STEAM_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/_RELEASE/steam_api64.lib")
+elseif(APPLE)
+    set(STEAM_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/_RELEASE/libsteam_api.dylib")
 else()
     set(STEAM_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/_RELEASE/libsteam_api.so")
 endif()
