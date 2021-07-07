@@ -361,10 +361,11 @@ bool steam_manager::steam_manager_impl::set_and_store_stat(
         return false;
     }
 
-    // Steam API seems to be bugged, and always needs floats even for integer
+    // Steam API seems to be bugged, and sometimes needs floats even for integer
     // stats.
     const float as_float = data;
-    if(!SteamUserStats()->SetStat(name.data(), as_float))
+    if(!SteamUserStats()->SetStat(name.data(), as_float) &&
+        !SteamUserStats()->SetStat(name.data(), data))
     {
         ssvu::lo("Steam") << "Error setting stat '" << name << "' to '"
                           << as_float << "'\n";
@@ -410,17 +411,23 @@ bool steam_manager::steam_manager_impl::set_and_store_stat(
         return false;
     }
 
-    // Steam API seems to be bugged, and always needs floats even for integer
+    // Steam API seems to be bugged, and sometimes needs floats even for integer
     // stats.
     float as_float;
-    if(!SteamUserStats()->GetStat(name.data(), &as_float))
+    if(SteamUserStats()->GetStat(name.data(), &as_float))
+    {
+        *out = as_float;
+        return true;
+    }
+    else if(SteamUserStats()->GetStat(name.data(), out))
+    {
+        return true;
+    }
+    else
     {
         ssvu::lo("Steam") << "Error getting stat " << name.data() << '\n';
         return false;
     }
-
-    *out = as_float;
-    return true;
 }
 
 bool steam_manager::steam_manager_impl::
