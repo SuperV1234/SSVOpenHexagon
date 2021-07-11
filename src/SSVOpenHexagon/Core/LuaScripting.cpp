@@ -130,8 +130,8 @@ static void redefineIoOpen(Lua::LuaContext& lua)
 try
 {
     lua.executeCode(
-        "local open = io.open; io.open = function(filename) return "
-        "open(filename, \"r\"); end");
+        "local open = io.open; io.open = function(filename, mode) return "
+        "open(filename, mode == \"rb\" and mode or \"r\"); end");
 }
 catch(...)
 {
